@@ -40,7 +40,7 @@ public class TestingServiceImpl implements TestingService {
                 .getByAppUser_IdAndTest_Id(userId,testId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found."));
 
-        if (!session.isEnded())
+        if (!session.isTerminated())
             throw new IllegalStateException("Test session is ongoing.");
 
         var userTestAnswers = answerRepository
@@ -57,8 +57,9 @@ public class TestingServiceImpl implements TestingService {
                 var dto = new AnswerOptionResultDto();
                 dto.setId(ao.getId());
                 dto.setText(ao.getText());
-                dto.setRight(ao.getPointsIfCorrect() != 0);
-                dto.setUserSelected(userTestAnswers.stream().anyMatch(ans -> ans.getId()==ao.getId()));
+                dto.setRight(ao.getPointsIfCorrect() > 0.0);
+                dto.setUserSelected(userTestAnswers.stream().anyMatch(ans -> ans.getAnswerOption().getId()==ao.getId()));
+                ansDto.add(dto);
             });
         });
         return ansDto;
@@ -107,8 +108,8 @@ public class TestingServiceImpl implements TestingService {
                 .getByAppUser_IdAndTest_Id(userId,testId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found."));
 
-        if (!session.isEnded())
-            throw new IllegalArgumentException("Session ongoing ended.");
+        if (!session.isTerminated())
+            throw new IllegalArgumentException("Session ongoing.");
 
         var testDto = testMapper.ToSessionDto(test);
 

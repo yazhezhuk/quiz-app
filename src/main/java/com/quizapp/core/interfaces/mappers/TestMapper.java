@@ -2,13 +2,14 @@ package com.quizapp.core.interfaces.mappers;
 
 import com.quizapp.core.models.Test;
 import com.quizapp.web.dto.TestDto;
-import com.quizapp.web.dto.TestViewDto;
+import com.quizapp.web.dto.TestCreationDto;
 
 
 public interface TestMapper extends Mapper<Test>{
-    Test FromCreationDto(TestViewDto creationDto);
+    Test FromCreationDto(TestCreationDto creationDto);
 
-    TestViewDto ToDefaultDto(Test test);
+
+    TestCreationDto ToDefaultDto(Test test);
 
     TestDto ToSessionDto(Test test);
 }

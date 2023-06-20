@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
             )
                 .then(response => {
                     localStorage.setItem("test",JSON.stringify(response.data));
-                    navigate("/testSession/")
+                    navigate("/test/session/")
 
                 })
                 .catch(error => console.log(error));

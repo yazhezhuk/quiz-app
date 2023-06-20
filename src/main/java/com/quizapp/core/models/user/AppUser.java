@@ -1,6 +1,7 @@
 package com.quizapp.core.models.user;
 
 import com.quizapp.core.models.Answer;
+import com.quizapp.core.models.Test;
 import com.quizapp.core.models.TestingSession;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,10 @@ public class AppUser implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+
+    @OneToMany
+    private List<Test> createdTests;
+
 
     @Enumerated(EnumType.STRING)
     private Role role;

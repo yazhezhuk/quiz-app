@@ -8,12 +8,9 @@
 }
 .welcomeMessage {
     color: #f4f4f4;
-    font-size: 2vw;
-    font-weight: 300;
     font-family: Segoe UI, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
     'Liberation Sans', sans-serif;
     position: relative;
-    height: min-content;
     text-align: center;
     align-items: center;
     text-shadow: -1px 1px 10px #00000026;
@@ -21,26 +18,17 @@
 }
 .welcome {
     color: #ef5858;
-    font-size: 8vw;
     font-family: Roboto, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
     'Liberation Sans', sans-serif;
-    text-align: center;
     position: relative;
     text-shadow: -1px 1px 10px #ef585826;
-    white-space: nowrap;
-    flex-direction: column;
 }
 .regBg {
     position: relative;
     border-radius: 15px;
     background-color: #ffde69;
     box-shadow: -1px 1px 10px 0 #ffde6926;
-    min-width: fit-content;
-    min-height: fit-content;
-    max-width: 40%;
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 1%;
 }
 .font3 {
@@ -249,7 +237,6 @@
     position: relative;
     outline: solid 3px #ffde69;
     outline-offset: -3px;
-    border-radius: 15px;
     box-shadow: -1px 1px 10px 0px #ffde6926;
 }
 
@@ -292,8 +279,6 @@
 
 .loginFont {
     color: #ffde69;
-    font-size: 4vw;
-    font-weight: 600;
     font-family: Segoe UI, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
     'Liberation Sans', sans-serif;
     position: relative;

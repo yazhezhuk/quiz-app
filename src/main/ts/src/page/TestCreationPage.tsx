@@ -11,19 +11,18 @@ const testTest = {
     name: "База",
     theme: "yes",
     isGraded: false,
-    author: "Zheka Bukur",
     questions: [
         {
-            id: 1, text: "Pes patron?", grade: 2, answerOptions: [{
-                text: "cringe", id: 1, grade: 1
+            text: "Pes patron?", maxPoints: 1, answerOptions: [{
+                text: "cringe", points: 0
             }, {
-                text: "base", id: 2
+                text: "base", points: 0
             }]
         }, {
-            id: 2, text: "Trivoga?", grade: 2, answerOptions: [{
-                text: "cringe", id: 3
+            text: "Trivoga?", maxPoints: 2, answerOptions: [{
+                text: "cringe", points: 0
             }, {
-                text: "base", id: 4
+                text: "base", points: 0
             }]
         }
     ]
@@ -51,26 +50,14 @@ const TestCreationPage: React.FC = () => {
 
 
     const uploadTestAnswers = () => {
-        answers.forEach((option, question) => {
-            if (option === 0)
-                return
-            axios.post('/api/test/answer/' + question + '/with/' + option, {}, {
+        axios.post('/api/test/create/',test, {
                 headers: {
                     Authorization: "Bearer "
                         + JSON.parse(sessionStorage.getItem("user") ?? "").token
                 }
             })
-                .then(res =>
-                    axios.post('/api/test/end/' + test.id, {}, {
-                        headers: {
-                            Authorization: "Bearer "
-                                + JSON.parse(sessionStorage.getItem("user") ?? "").token
-                        }
-                    })
-                )
-                .catch(err => console.log(err));
-
-        });
+                .then(res => nav(""))
+                .catch(err => console.error(err));
     }
 
 
@@ -108,8 +95,64 @@ const TestCreationPage: React.FC = () => {
         setLatestAnswerId(latestAnswerId+1);
     }
 
+    const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        test.theme = event.target.value as string;
+    };
+
+    const handleGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        test.questions[Number(event.target.id)].maxPoints = event.target.value
+    };
+
     const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("Questid " + event.target.id)
         test.questions[Number(event.target.id)].text = event.target.value
+    };
+
+    const handleAnswerOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let key: { q: number, o: number } = JSON.parse(event.target.id)
+        console.log("Questid " + key.q + " opt " + key.o)
+        test.questions[key.q]
+            .answerOptions[key.o]
+            .text = event.target.value
+    };
+
+    const checkIfAnotherSelected = (questionId:number) => {
+        const res = test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.points!==0,false)
+        console.log("is selected:" + res);
+        return res;
+    }
+
+    const getAnswerIndex = (question: any) => {
+        console.log(question.answerOptions.findIndex((ao: any) => ao.points!==0))
+        return question.answerOptions.findIndex((ao: any) => ao.points!==0)
+    }
+
+    const handleTrueAnswerOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let key: { q: number, o: number } = JSON.parse(event.target.id)
+        console.log("Questid " + key.q + " opt " + key.o)
+        let option = test.questions[key.q].answerOptions[key.o];
+        let question = test.questions[key.q];
+
+
+        if (!checkIfAnotherSelected(key.q)) {
+            console.log("Setting" )
+            option.points = question.maxPoints
+            setTest(test)
+            setUpdate(!update)
+        } else if (key.o !== getAnswerIndex(question)) {
+            console.log(key.o + " " + getAnswerIndex(question))
+            test.questions[key.q]
+                .answerOptions[getAnswerIndex(question)]
+                .points = 0
+            option.points = question.maxPoints
+            setTest(test)
+            setUpdate(!update)
+        }
+        else {
+            option.points = 0
+            setTest(test)
+            setUpdate(!update)
+        }
     };
 
     const isEnabled = (qId: number, oId: number): boolean => {
@@ -133,7 +176,7 @@ const TestCreationPage: React.FC = () => {
                                 <button className="w-1/6 rounded-5 p-2 h5 border-2 border-black border-opacity-100 font-semibold ms-auto align-self-end justify-content-center" onClick={uploadTestAnswers}>Відправити</button>
 
                             </div>
-                            <input placeholder="Тема сесії" className="m-4 text-dark-700 bg-light text-xl ps-3 mb-1 font-semibold align-self-start w-50 d-flex "></input>
+                            <input onChange={handleThemeChange} placeholder="Тема сесії" className="m-4 text-dark-700 bg-light text-xl ps-3 mb-1 font-semibold align-self-start w-50 d-flex "></input>
                             <hr className="h-px rounded-5 border-2 border-dark opacity-100 m-4 mb-0 mt-0"/>
                             <Form.Label className="align-self-baseline pb-1  d-flex m-4">Ввімкнути оцінювання<Form.Check onChange={handleGradingChange} type="switch"></Form.Check></Form.Label>
 
@@ -151,7 +194,10 @@ const TestCreationPage: React.FC = () => {
                                             {   isGraded?
                                                 <Form.Label className="d-flex m-0 align-items-baseline font-semibold">Бали:
                                                 <input
+                                                    id={index}
                                                     placeholder="0"
+                                                    type="number"
+                                                    onChange={handleGradeChange}
                                                 className="bg-secondary align-content-center justify-content-center ps-4 m-0 bg-opacity-10 w-16 text-xs h-75"></input>
                                                 </Form.Label>:
                                                 null
@@ -166,10 +212,10 @@ const TestCreationPage: React.FC = () => {
                                                 <Form.Check
                                                     type="checkbox"
                                                     className="w-10"
-                                                    id={JSON.stringify({q: question.id, o: option.id}) ?? 1}
-                                                    onChange={handleCheckChange}
-                                                    disabled={isEnabled(question.id, option.id)}/>
-                                                    <Input id={option.id} className="w-auto p-0"></Input>
+                                                    id={JSON.stringify({q: index, o: optionIndex % 2}) ?? 1}
+                                                    onChange={handleTrueAnswerOptionChange}
+                                                    checked={optionIndex === getAnswerIndex(question)}/>
+                                                    <Input id={JSON.stringify({q: index, o: optionIndex % 2} ?? 1)} onChange={handleAnswerOptionChange} className="w-auto p-0"></Input>
                                                 </Form.Label>
 
                                             ))}

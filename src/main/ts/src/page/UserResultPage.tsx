@@ -1,52 +1,63 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import Test from "../models/Test";
 import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, Form, ListGroup} from "react-bootstrap";
 import classes from './HelloPage.module.css';
-import any = jasmine.any;
 
 
 const testTest = {
     name: "База",
     theme: "yes",
+    grade: 15,
     author: "Zheka Bukur",
+    answers: [{isRight:false,isUserSelected:true},{isRight:true,isUserSelected:false},{isRight:true,isUserSelected:true},{isRight:false,isUserSelected:false}],
     questions: [
         {
             id: 1, text: "Pes patron?", grade: 2, answerOptions: [{
-                text: "cringe", id: 1, selected: false
+                text: "cringe", id: 1, isTrue: true,isUserSelected: false
             }, {
-                text: "base", id: 2, selected: false
+                text: "base", id: 2, isTrue: false,isUserSelected: true
             }]
         }, {
             id: 2, text: "Trivoga?", grade: 2, answerOptions: [{
-                text: "cringe", id: 3, selected: false
+                text: "cringe", isTrue: true,isUserSelected: true
             }, {
-                text: "base", id: 4, selected: false
+                text: "base", isTrue: false,isUserSelected: false
             }]
         }
     ]
 }
 
-const UserResult: React.FC< {test: any} > = (props: {test:any}) => {
+const UserResult: React.FC = () => {
     const nav = useNavigate();
+    const {testId} = useParams();
+    const [test,setTest] = useState<any>(testTest);
 
     const getAnswer = (question: any) => {
         return question.answerOptions.filter((ao: any) => ao.selected)[0]
     }
 
     useEffect(() => {
-        axios.get('/api/test/result/' + props.test.id, {
+        axios.get('/api/test/result/' + testId, {
             headers: {
                 Authorization: "Bearer "
                     + JSON.parse(sessionStorage.getItem("user") ?? '{"token":"yes"}').token
             }
         }).then(res => {
-            props.test = {...props.test,grade: res.data.grade }
-        })
-    },[props])
+            console.log(res.data)
+            setTest(res.data)
+        }).catch(err => {})
+    },[])
 
+    const isUserSelected = (q:number,o:number) => {
+        console.log(q + " " + o)
+        console.log(test.questions.length)
+        return test.answers[(q % test.questions.length) + ((o % test.questions[q].answerOptions.length) + q)].userSelected
+    }
 
+    const isTrue = (q:number,o:number) => {
+        return test.answers[(q % test.questions.length) + (o % test.questions[q].answerOptions.length)+ q].right
+    }
     // const isEnabled = (qId: number, oId: number): boolean => {
     //     return answers.get(qId) !== 0 || answers.get(qId) === oId
     // }
@@ -61,14 +72,14 @@ const UserResult: React.FC< {test: any} > = (props: {test:any}) => {
                         <ListGroup className="bg-light rounded-4">
                             <div className="d-flex flex-row">
                                 <img onClick={() => nav("/main")} className="w-8 m-3" src={require("../icons/left-arrow.png")} alt="1"></img>
-                                <p className="font-normal ms-auto me-auto d-flex justify-self-end align-self-center h3">'{props.test.name}'</p>
+                                <p className="font-normal ms-auto me-auto d-flex justify-self-end align-self-center h3">'{test.name}'</p>
                             </div>
-                            <p className="font-light justify-self-end align-self-center">Творець:{props.test.author}</p>
+                            <p className="font-light justify-self-end align-self-center">Творець:{test.author}</p>
 
-                            <p className="d-flex ps-4 h5 mb-0 font-bold">Запитань: {props.test.questions.length}</p>
-                            <p className="d-flex ps-4 h5 mb-0 font-bold">Бал: {props.test.grade}</p>
+                            <p className="d-flex ps-4 h5 mb-0 font-bold">Запитань: {test.questions.length}</p>
+                            <p className="d-flex ps-4 h5 mb-0 font-bold">Бал: {test.grade}</p>
 
-                            {props.test.questions.map((question: any, index: any) => (
+                            {test.questions.map((question: any, index: any) => (
 
                                 <div className="p-4 pt-1">
                                     <ListGroup.Item className="d-flex shadow-md hover:shadow-lg flex-column">
@@ -81,24 +92,19 @@ const UserResult: React.FC< {test: any} > = (props: {test:any}) => {
                                         </div>
                                         <hr className="bg-gray-700 border-2 mt-0"/>
                                         <Form className="d-flex justify-content-evenly flex-column">
-
-                                            {question.answerOptions.map((option: any, optionIndex: any) => (
-                                                <Form.Check
-                                                    type="checkbox"
-                                                    className="w-10"
-                                                    label={option.text}
-                                                    id={JSON.stringify({q: question.id - 1, o: optionIndex}) ?? 1}
-                                                    onClick={handleCheckChange}
-                                                    checked={option.selected}
-                                                />
-                                            ))}
+                                            <div className="d-flex w-50 mt-3 flex-column">
+                                                {question.answerOptions.map((option: any, optionIndex: any) => (
+                                                    <p className={"w-75 m-1 justify-content-baseline font-light text-lg d-flex flex-row " +
+                                                        (isTrue(index,optionIndex) && isUserSelected(index,optionIndex) ? classes.green : !isTrue(index,optionIndex) && isUserSelected(index,optionIndex) ? "text-red-500 font-semibold" : "")}> {optionIndex + 1}. {option.text}
+                                                        {(isTrue(index,optionIndex) && isUserSelected(index,optionIndex) ? " ✓" : !isTrue(index,optionIndex) && isUserSelected(index,optionIndex) ? " ×" : "")}</p>
+                                                ))}
+                                            </div>
                                         </Form>
                                     </ListGroup.Item>
                                 </div>
 
 
                             ))}
-                            <button className={classes.button + " w-25 mb-5 rounded-4 p-3 h5 font-semibold d-flex align-self-center justify-content-center"} onClick={uploadTestAnswers}>Відправити</button>
                         </ListGroup></>
                 }
             </div>

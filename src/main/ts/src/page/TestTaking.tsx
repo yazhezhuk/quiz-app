@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import Test from "../models/Test";
 import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, Form, ListGroup} from "react-bootstrap";
 import classes from './HelloPage.module.css';
@@ -27,16 +26,14 @@ const testTest = {
     ]
 }
 
-const TestTaking: React.FC = () => {
+const TestTaking: React.FC<{}> = () => {
     const nav = useNavigate();
     const [test, setTest] = useState<any>(testTest);
     const [update, setUpdate] = useState<boolean>(false);
 
 
     useEffect(() => {
-        //let test = JSON.parse(localStorage.getItem("test")??"")
-        setTest(testTest)
-        console.log("set")
+        setTest(JSON.parse(localStorage.getItem("test") ?? "{}"));
     }, []);
 
     const getAnswer = (question: any) => {
@@ -54,17 +51,22 @@ const TestTaking: React.FC = () => {
                         + JSON.parse(sessionStorage.getItem("user") ?? '{"token":"yes"}').token
                 }
             })
-                .catch(res =>{
+                .then(resp =>{
                     console.log("Here")
-                    if (index === test.questions.length)
-                    axios.post('/api/test/end/' + test.id, {}, {
-                        headers: {
-                            Authorization: "Bearer "
-                                + JSON.parse(sessionStorage.getItem("user") ?? "").token
-                        }
-                    }).then(r => {
-                        sessionStorage.setItem("lastTest",JSON.stringify(test))
-                    })
+                    if (index === test.questions.length - 1)
+                        axios.post('/api/test/end/' + test.id, {}, {
+                            headers: {
+                                Authorization: "Bearer "
+                                    + JSON.parse(sessionStorage.getItem("user") ?? "").token
+                            }
+                        }).then(r => {
+                            sessionStorage.setItem("lastTest",JSON.stringify(test))
+                            nav("test/result/" + test.id)
+                            console.log("Test ended.")
+                        })
+                } )
+                .catch(err =>{
+
                 }
                 )
                 .catch(err => console.log(err));
@@ -73,10 +75,10 @@ const TestTaking: React.FC = () => {
     }
 
 
-    const checkIfAnotherSelected = (questionId:number) => {
-        console.log("is selected:" + test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false))
-        return test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false)
-    }
+        const checkIfAnotherSelected = (questionId:number) => {
+            console.log("is selected:" + test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false))
+            return test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false)
+        }
 
     const handleCheckChange = (event: any) => {
         let key: { q: number, o: number } = JSON.parse(event.target.id)
@@ -150,7 +152,7 @@ const TestTaking: React.FC = () => {
                                                     type="checkbox"
                                                     className="w-10"
                                                     label={option.text}
-                                                    id={JSON.stringify({q: question.id - 1, o: optionIndex}) ?? 1}
+                                                    id={JSON.stringify({q: index, o: optionIndex}) ?? 1}
                                                     onClick={handleCheckChange}
                                                     checked={option.selected}
                                                 />

@@ -1,3 +1,16 @@
 package com.quizapp.web.dto;
 
-public record TestViewDto(int id, String name, String theme) { }
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class TestViewDto {
+    private int id;
+    private String name;
+    private String theme;
+}

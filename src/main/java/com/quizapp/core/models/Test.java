@@ -6,6 +6,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.context.annotation.Lazy;
 
 import java.time.DateTimeException;
 import java.time.Duration;
@@ -31,6 +32,11 @@ public class Test {
 
     public final static short TEST_MIN_DURATION_MINUTES = 5;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @Lazy
+    @JoinColumn(name = "answer_id")
+    private List<Answer> answers;
+
     @Column
     @Nullable
     private LocalDateTime startDate;
@@ -41,6 +47,9 @@ public class Test {
 
     @Column
     private String authCode;
+
+    @ManyToOne
+    private AppUser creator;
 
     @Column
     @Nationalized
@@ -57,9 +66,11 @@ public class Test {
         if (getState() == TestState.FINISHED)
             throw new DateTimeException("Cant add new question");
         ensureQuestionNotExists(question);
-
+        question.setTest(this);
         questions.add(question);
     }
+
+
 
     public long getDuration(){
         return startDate != null ? Duration.between(startDate,endDate).toMillis() : 1000000000;

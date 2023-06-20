@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
 public class AnswerOptionMapper implements com.quizapp.core.interfaces.mappers.AnswerOptionMapper {
 
     public AnswerOption FromCreationDto(AnswerOptionCreationDto answerOptionDto){
-        //return new AnswerOption(answerOptionDto.getText(),answerOptionDto.getPoints());
-        return null;
+        return AnswerOption.builder()
+                .text(answerOptionDto.getText())
+                .pointsIfCorrect(answerOptionDto.getPoints()).build();
     }
 
     @Override
     public AnswerOptionViewDto ToViewDto(AnswerOption answerOption) {
-        return new AnswerOptionViewDto(answerOption.getId(), answerOption.getText());
+        return new AnswerOptionViewDto(answerOption.getId(), answerOption.getText(),false);
     }
 }

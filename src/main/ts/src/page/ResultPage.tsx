@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Card, Form, ListGroup} from "react-bootstrap";
 import classes from './HelloPage.module.css';
 import {Chart} from "react-google-charts";
@@ -10,7 +10,7 @@ const testTest = {
     name: "База",
     theme: "yes",
     author: "Zheka Bukur",
-    questions: [
+    answer: [
         {
             id: 1, text: "Pes patron?", grade: 2, answerOptions: [{
                 text: "cringe", id: 1, isTrue: true, percent: 85
@@ -33,7 +33,7 @@ const ResultPage: React.FC = () => {
     const [answers, setAnswers] = useState(new Map<number, number>());
 
     useEffect(() => {
-        //let test = JSON.parse(localStorage.getItem("test")??"")
+
         setTest(testTest)
         console.log("set")
         test.questions.forEach((question: any) => {

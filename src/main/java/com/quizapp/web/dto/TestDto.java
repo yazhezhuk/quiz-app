@@ -1,10 +1,7 @@
 package com.quizapp.web.dto;
 
 import com.quizapp.core.models.Question;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 public class TestDto {
+    private int id;
     private String author;
     private long duration;
     private double grade;

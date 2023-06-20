@@ -1,17 +1,14 @@
 package com.quizapp.web.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Data
+@Builder
 @AllArgsConstructor
 public class AnswerOptionCreationDto {
-    private String Text;
-      private boolean isCorrect;
+    private String text;
     private double points;
 }

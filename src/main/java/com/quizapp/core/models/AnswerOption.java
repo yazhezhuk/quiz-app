@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.context.annotation.Lazy;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +23,11 @@ public class AnswerOption {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @OneToMany
+    @Lazy
+    @JoinColumn(name = "answer_id")
+    private List<Answer> answers;
 
     @Column
     @Nationalized

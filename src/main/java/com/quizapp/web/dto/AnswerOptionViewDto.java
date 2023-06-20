@@ -16,4 +16,8 @@ public class AnswerOptionViewDto {
     @Getter
     @Setter
     private String text;
+
+    @Getter
+    @Setter
+    private boolean selected;
 }

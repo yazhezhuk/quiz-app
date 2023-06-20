@@ -3,6 +3,7 @@ package com.quizapp.core.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Question  {
 
     @Id
@@ -26,6 +28,11 @@ public class Question  {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<AnswerOption> answerOptions;
+
+    @OneToMany
+    @Lazy
+    @JoinColumn(name = "answer_id")
+    private List<Answer> answers;
 
     @Column
     @Nationalized
@@ -56,6 +63,7 @@ public class Question  {
         if (containsAnswer(newAnswer))
             throw new IllegalArgumentException("Cannot add same answer twice.");
         answerOptions.add(newAnswer);
+        newAnswer.setQuestion(this);
     }
 
     public int getMaxPoints() {
