@@ -2,18 +2,17 @@ package com.quizapp.core.services;
 
 import com.quizapp.core.interfaces.mappers.TestMapper;
 import com.quizapp.core.interfaces.repository.*;
-import com.quizapp.core.interfaces.services.domain.TestBuilderService;
 import com.quizapp.core.interfaces.services.domain.TestingService;
 import com.quizapp.core.models.*;
-import com.quizapp.web.dto.AnswerOptionResultDto;
-import com.quizapp.web.dto.TestDto;
-import com.quizapp.web.dto.TestResultsDto;
+import com.quizapp.web.dto.answer.options.AnswerOptionResultDto;
+import com.quizapp.web.dto.test.TestDto;
+import com.quizapp.web.dto.test.TestOverviewDto;
+import com.quizapp.web.dto.test.TestResultViewDto;
+import com.quizapp.web.dto.test.TestViewDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.xml.datatype.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -88,6 +87,22 @@ public class TestingServiceImpl implements TestingService {
         return testMapper.ToSessionDto(test);
     }
 
+    @Override
+    public TestOverviewDto getOverview(int testId) {
+        var test = testRepository.findById(testId).orElseThrow(() -> new IllegalArgumentException("Test not found"));
+
+        var sessions = testingSessionRepository.getByTest_Id(testId).get();
+
+        TestOverviewDto dto = new TestOverviewDto();
+        dto.setTheme(test.getTheme());
+        dto.setId(testId);
+        dto.setAuthor(test.getCreator().getEmail());
+        dto.setCompleted((int) sessions.stream().filter(TestingSession::isTerminated).count());
+        dto.setRegistered(sessions.size());
+        dto.setAuthCode(test.getAuthCode());
+        return dto;
+    }
+
     public void answerQuestion(int userId,int questionId,int answerOptionId){
         var user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         var answerOption = answerOptionRepository.findById(answerOptionId).orElseThrow(() -> new IllegalArgumentException("Option not found."));
@@ -96,6 +111,9 @@ public class TestingServiceImpl implements TestingService {
                 .user(user)
                 .answerOption(answerOption)
                 .build();
+        answerOption.getAnswers().add(answer);
+        answerOption.getQuestion().getAnswers().add(answer);
+        answerOption.getQuestion().getTest().getAnswers().add(answer);
 
         answerRepository.saveAndFlush(answer);
     }
@@ -118,6 +136,30 @@ public class TestingServiceImpl implements TestingService {
         testDto.setAnswers(answers);
         testDto.setGrade(session.getGrade());
         return testDto;
+    }
+
+    public TestViewDto getUsersResults(int testId){
+        var test = testRepository.findById(testId).orElseThrow(() -> new IllegalArgumentException("Test not found"));
+
+        var sessions = testingSessionRepository
+                .getByTest_Id(testId)
+                .orElseThrow(() -> new IllegalArgumentException("Session not found."));
+
+        var dto = TestViewDto.builder()
+                .id(testId)
+                .maxGrade(test.getMaxPoints())
+                .theme(test.getTheme())
+                .name(test.getName())
+                .results(sessions.stream().map(sess -> TestResultViewDto.builder()
+                                .username(sess.getAppUser().getUsername())
+                                .userId(sess.getAppUser().getId())
+                                .grade(sess.getGrade())
+                                .username(sess.getAppUser().getEmail()).build())
+                        .toList()
+                ).build();
+        ;
+
+        return dto;
     }
 
     public void endTest(int userId,int testId){

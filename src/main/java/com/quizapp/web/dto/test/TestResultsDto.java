@@ -1,5 +1,6 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.test;
 
+import com.quizapp.web.dto.question.QuestionResultDto;
 import lombok.Getter;
 import lombok.Setter;
 

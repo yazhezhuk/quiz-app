@@ -8,23 +8,30 @@ import TestTaking from "./page/TestTaking";
 import TestCreationPage from "./page/TestCreationPage";
 import ResultPage from "./page/ResultPage";
 import UserResult from "./page/UserResultPage";
+import {UsersResultList} from "./page/UsersResultList";
+import {RoleChooser} from "./page/RoleChooser";
+import TestInfoPage from "./page/TestInfoPage";
 
 function App() {
-  return (
-    <div className="App vh-100 .root">
-        <div className="container vh-100 d-flex justify-content-center">
-            <div className="row h-100 d-flex">
-            <Routes>
-          <Route path="/" element={<WelcomePage/>}  />
-          <Route path="/main"  element={<HomePage/>} />
-          <Route  path="/test/session/" element={<TestTaking/>} />
-            <Route path="/test/result/:testId" element={<UserResult/>} />
-            <Route path="/test/create/" element={<TestCreationPage/>}></Route>
-        </Routes>
+    return (
+        <div className="App h-100 min-h-screen ">
+            <div className="container h-100 d-flex justify-content-center">
+                <div className="w-75 row h-100 d-flex">
+                    <Routes>
+                        <Route path="/" element={<WelcomePage/>}/>
+                        <Route path="/choose" element={<RoleChooser/>}/>
+                        <Route path="/main" element={<HomePage/>}/>
+                        <Route path="/test/session/" element={<TestTaking/>}/>
+                        <Route path="/test/result/:testId" element={<UserResult/>}/>
+                        <Route path="/test/creator/result/:testId" element={<ResultPage/>}/>
+                        <Route path="/test/create/" element={<TestCreationPage/>}></Route>
+                        <Route path="/test/creator/result/:testId/list" element={<UsersResultList/>}></Route>
+                        <Route path="/test/creator/overview/:testId" element={<TestInfoPage/>}></Route>
+                    </Routes>
+                </div>
+            </div>
         </div>
-        </div>
-    </div>
-  );
+    );
 }
 
 export default App;

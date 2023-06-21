@@ -1,4 +1,4 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TestViewDto {
-    private int id;
-    private String name;
-    private String theme;
+public class TestResultViewDto {
+    private String username;
+    private int userId;
+    private double grade;
 }

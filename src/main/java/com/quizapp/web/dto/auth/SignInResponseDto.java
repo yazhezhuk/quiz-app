@@ -1,6 +1,5 @@
 package com.quizapp.web.dto.auth;
 
-import com.quizapp.web.dto.UserDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

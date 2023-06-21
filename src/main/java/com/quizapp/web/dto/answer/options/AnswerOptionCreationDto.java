@@ -1,4 +1,4 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.answer.options;
 
 
 import lombok.*;

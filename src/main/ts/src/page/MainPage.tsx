@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Card, Button } from "react-bootstrap";
+import {Card, Button} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import axios from 'axios';
 import Test from "../models/Test";
@@ -8,39 +8,48 @@ import {Input} from "reactstrap";
 import {useNavigate} from "react-router-dom";
 
 
-
 const HomePage: React.FC = () => {
     const [tests, setTests] = useState<Test[]>([]);
     const [key, setKey] = useState("");
     const navigate = useNavigate();
 
-        const onEnterClick = () => {
-            // Fetch lots from API
-            axios.post('/api/test/start/',{authenticator: key},{headers:{Authorization: "Bearer "
-                        + JSON.parse(sessionStorage.getItem("user")??"").token
-            }}
-            )
-                .then(response => {
-                    localStorage.setItem("test",JSON.stringify(response.data));
-                    navigate("/test/session/")
+    const onEnterClick = () => {
+        // Fetch lots from API
+        axios.post('/api/test/start/', {authenticator: key}, {
+                headers: {
+                    Authorization: "Bearer "
+                        + JSON.parse(sessionStorage.getItem("user") ?? "").token
+                }
+            }
+        )
+            .then(response => {
+                localStorage.setItem("test", JSON.stringify(response.data));
+                navigate("/test/session/")
 
-                })
-                .catch(error => console.log(error));
-        }
+            })
+            .catch(error => console.log(error));
+    }
     const handleKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKey(event.target.value);
     };
 
 
     return (
-        <div className="container w-50 justify-content-center">
-            <div className={"p-5 " + classes.name}>ПАвлов Олександр Андрійович </div>
+        <div className="ms-auto me-auto align-self-center mb-40 w-50 justify-content-center">
+            <div className={"p-5 " + classes.name}>{JSON.parse(sessionStorage.getItem("user") ?? "{}").user.name} </div>
 
-            <div className={'row pb-5 pt-3 ' + classes.bg}>
-                <div className={classes.enterText}>Вхід у сесію</div>
+            <div className={'row pb-4 pt-0   ' + classes.bg}>
+                <div className="d-flex flex-row p-2 pt-0">
+                    <img onClick={() => navigate("/choose")} className="w-8 m-3" src={require("../icons/left-arrow.png")} alt="1"></img>
 
-                <Input onChange={handleKeyChange} placeholder="Код-ідентифікатор" className={'w-75 ' + classes.placeholder}></Input>
-                <Button onClick={onEnterClick} className={'mt-4 ' + classes.button}>Вхід</Button>
+                </div>
+                <div className={classes.enterText + " font-bold text-lg mb-2 ms-2"}>Вхід у сесію</div>
+
+                <div className="text-black">
+                    <input onChange={handleKeyChange} placeholder="Код-ідентифікатор"
+                           className={'bg-transparent border-black p-1 border-2 rounded-3 text-black w-100 ms-2 ps-2' + classes.placeholder}></input>
+                </div>
+                <Button onClick={onEnterClick} className={'mt-5 mb-0 ms-auto me-auto ' + classes.button}>Вхід</Button>
 
             </div>
         </div>

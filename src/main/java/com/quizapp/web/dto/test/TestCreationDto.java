@@ -1,8 +1,8 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.test;
 
+import com.quizapp.web.dto.question.QuestionCreationDto;
 import lombok.*;
 import java.util.List;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,5 +12,7 @@ import java.util.Objects;
 public final class TestCreationDto {
     private String name;
     private String theme;
+    private boolean isGraded;
+    private boolean isForm;
     private List<QuestionCreationDto> questions;
 }

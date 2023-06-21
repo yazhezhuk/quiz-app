@@ -254,8 +254,8 @@
 
 ::-webkit-scrollbar {
     border-radius: 10px;
-    width: 1px;
-    height: 1px;
+    width: 0;
+    height: 0;
 }
 
 .trueCheck{

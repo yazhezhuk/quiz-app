@@ -1,9 +1,8 @@
 package com.quizapp.web.mappers;
 
-import com.quizapp.core.interfaces.mappers.Mapper;
 import com.quizapp.core.models.AnswerOption;
-import com.quizapp.web.dto.AnswerOptionCreationDto;
-import com.quizapp.web.dto.AnswerOptionViewDto;
+import com.quizapp.web.dto.answer.options.AnswerOptionCreationDto;
+import com.quizapp.web.dto.answer.options.AnswerOptionViewDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

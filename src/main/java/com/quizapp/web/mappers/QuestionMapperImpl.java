@@ -3,8 +3,8 @@ package com.quizapp.web.mappers;
 
 import com.quizapp.core.interfaces.mappers.QuestionMapper;
 import com.quizapp.core.models.Question;
-import com.quizapp.web.dto.QuestionCreationDto;
-import com.quizapp.web.dto.QuestionDto;
+import com.quizapp.web.dto.question.QuestionCreationDto;
+import com.quizapp.web.dto.question.QuestionDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

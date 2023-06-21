@@ -1,5 +1,6 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.question;
 
+import com.quizapp.web.dto.answer.options.AnswerOptionViewDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,6 @@ import java.util.List;
 public class QuestionDto {
     private int id;
     private String text;
-    private int grade;
+    private double grade;
     private List<AnswerOptionViewDto> answerOptions;
 }

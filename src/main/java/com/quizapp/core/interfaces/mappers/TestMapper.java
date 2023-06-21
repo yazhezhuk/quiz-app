@@ -1,8 +1,8 @@
 package com.quizapp.core.interfaces.mappers;
 
 import com.quizapp.core.models.Test;
-import com.quizapp.web.dto.TestDto;
-import com.quizapp.web.dto.TestCreationDto;
+import com.quizapp.web.dto.test.TestDto;
+import com.quizapp.web.dto.test.TestCreationDto;
 
 
 public interface TestMapper extends Mapper<Test>{

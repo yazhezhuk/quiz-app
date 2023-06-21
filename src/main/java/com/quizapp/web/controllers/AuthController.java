@@ -2,7 +2,7 @@ package com.quizapp.web.controllers;
 
 import com.quizapp.core.interfaces.repository.UserRepository;
 import com.quizapp.core.interfaces.services.AuthenticationService;
-import com.quizapp.web.dto.UserDto;
+import com.quizapp.web.dto.auth.UserDto;
 import com.quizapp.web.dto.auth.SignInRequestDto;
 import com.quizapp.web.dto.auth.SignInResponseDto;
 import com.quizapp.web.dto.auth.SignUpRequestDto;

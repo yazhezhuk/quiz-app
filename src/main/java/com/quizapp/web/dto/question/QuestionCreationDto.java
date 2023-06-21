@@ -1,11 +1,10 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.question;
 
-import jakarta.validation.constraints.Min;
+import com.quizapp.web.dto.answer.options.AnswerOptionCreationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 
 import java.util.List;
 

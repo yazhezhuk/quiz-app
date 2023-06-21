@@ -24,9 +24,7 @@ public class AnswerOption {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany
-    @Lazy
-    @JoinColumn(name = "answer_id")
+    @OneToMany(mappedBy = "answerOption")
     private List<Answer> answers;
 
     @Column

@@ -29,9 +29,7 @@ public class Question  {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<AnswerOption> answerOptions;
 
-    @OneToMany
-    @Lazy
-    @JoinColumn(name = "answer_id")
+    @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
     @Column
@@ -66,7 +64,7 @@ public class Question  {
         newAnswer.setQuestion(this);
     }
 
-    public int getMaxPoints() {
+    public double getMaxPoints() {
         var wrapper = new Object() {
             int points = 0;
         };

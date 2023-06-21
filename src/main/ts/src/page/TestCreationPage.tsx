@@ -5,6 +5,7 @@ import {Button, Card, Form, ListGroup} from "react-bootstrap";
 import classes from './HelloPage.module.css';
 import {Input} from "reactstrap";
 import {queries} from "@testing-library/react";
+import testInfoPage from "./TestInfoPage";
 
 
 const testTest = {
@@ -35,7 +36,6 @@ const TestCreationPage: React.FC = () => {
     const [answers, setAnswers] = useState(new Map<number, number>());
     const [isGraded,setIsGraded] = useState(false);
     const [latestQuestionId,setLatestQuestionId] = useState(0);
-    const [latestAnswerId,setLatestAnswerId] = useState(0);
 
     useEffect(() => {
         //let test = JSON.parse(localStorage.getItem("test")??"")
@@ -45,7 +45,6 @@ const TestCreationPage: React.FC = () => {
             answers.set(question.id, 0)
         })
         setLatestQuestionId(test.questions.length - 1);
-        setLatestAnswerId(test.questions[test.questions.length - 1].answerOptions.at(-1).id)
     }, []);
 
 
@@ -56,8 +55,8 @@ const TestCreationPage: React.FC = () => {
                         + JSON.parse(sessionStorage.getItem("user") ?? "").token
                 }
             })
-                .then(res => nav(""))
-                .catch(err => console.error(err));
+                // .then(res => nav("/test/creator/overview/"+res.data))
+               // .catch(err => console.error(err));
     }
 
 
@@ -74,8 +73,10 @@ const TestCreationPage: React.FC = () => {
     }
 
     const addNewQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("New question" + event.currentTarget.id)
+
         test.questions = [...test.questions, {
-            id: latestQuestionId, text: "", grade: 0,
+            text: "", maxPoints: 1,
             answerOptions: []
         }]
         console.log(test.questions)
@@ -85,14 +86,14 @@ const TestCreationPage: React.FC = () => {
     }
 
     const addNewAnswerOption = (event: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("New answer option" + event.currentTarget.id)
         let curr =  test.questions[event.currentTarget.id].answerOptions;
         test.questions[event.currentTarget.id].answerOptions = [...curr, {
-            id: latestAnswerId, text: ""
+            text: "",points:0
         }]
         console.log(test.questions)
         setTest(test)
-        setUpdate(true)
-        setLatestAnswerId(latestAnswerId+1);
+        setUpdate(!update)
     }
 
     const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +101,12 @@ const TestCreationPage: React.FC = () => {
     };
 
     const handleGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        test.questions[Number(event.target.id)].maxPoints = event.target.value
+        console.log("sdaasdsadasdasdas")
+        test.questions[Number(event.target.id)].maxPoints = Number(event.target.value)
+        test.questions[Number(event.target.id)].answerOptions.forEach((ao:any) => {
+            if (ao.points !== 0)
+                ao.points = Number(event.target.value)
+        })
     };
 
     const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,16 +170,11 @@ const TestCreationPage: React.FC = () => {
     }
 
     return (
-        <div className="container scroll-smooth vw-100 vh-100 d-flex flex-column  align-content-center  w-100">
-            <div className="row d-flex  w-90 justify-content-center mt-auto mb-auto align-content-center ">
-                {test === undefined ?
-                    <h4>Loading...</h4>
-                    :
-                    <>
-                        <ListGroup className="bg-light rounded-4 navbar-nav-scroll">
+        <div className="w-100 d-flex">
+                        <ListGroup className="w-100 bg-light rounded-4 navbar-nav-scroll">
                             <div className="d-flex flex-row p-2">
-                                <img onClick={() => nav("/main")} className="w-8 m-3" src={require("../icons/left-arrow.png")} alt="1"></img>
-                                <button className="w-1/6 rounded-5 p-2 h5 border-2 border-black border-opacity-100 font-semibold ms-auto align-self-end justify-content-center" onClick={uploadTestAnswers}>Відправити</button>
+                                <img onClick={() => nav("/choose")} className="w-8 m-3" src={require("../icons/left-arrow.png")} alt="1"></img>
+                                <button className="w-1/6 min-w-fit rounded-5 p-2 h5 border-2 border-black border-opacity-100 font-semibold ms-auto align-self-end justify-content-center" onClick={uploadTestAnswers}>Відправити</button>
 
                             </div>
                             <input onChange={handleThemeChange} placeholder="Тема сесії" className="m-4 text-dark-700 bg-light text-xl ps-3 mb-1 font-semibold align-self-start w-50 d-flex "></input>
@@ -212,10 +213,10 @@ const TestCreationPage: React.FC = () => {
                                                 <Form.Check
                                                     type="checkbox"
                                                     className="w-10"
-                                                    id={JSON.stringify({q: index, o: optionIndex % 2}) ?? 1}
+                                                    id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length}) ?? 1}
                                                     onChange={handleTrueAnswerOptionChange}
                                                     checked={optionIndex === getAnswerIndex(question)}/>
-                                                    <Input id={JSON.stringify({q: index, o: optionIndex % 2} ?? 1)} onChange={handleAnswerOptionChange} className="w-auto p-0"></Input>
+                                                    <Input id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length } ?? 1)} onChange={handleAnswerOptionChange} className="w-auto p-0"></Input>
                                                 </Form.Label>
 
                                             ))}
@@ -229,10 +230,7 @@ const TestCreationPage: React.FC = () => {
 
                             ))}
                             <Button onClick={addNewQuestion} className="d-flex p-2 m-4 rounded-4 justify-content-center w-22 align-self-center">Додати запитання</Button>
-                        </ListGroup></>
-                }
-            </div>
-        </div>
+                        </ListGroup></div>
     );
 };
 

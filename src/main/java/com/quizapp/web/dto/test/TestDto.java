@@ -1,9 +1,10 @@
-package com.quizapp.web.dto;
+package com.quizapp.web.dto.test;
 
-import com.quizapp.core.models.Question;
+import com.quizapp.web.dto.question.QuestionDto;
+import com.quizapp.web.dto.answer.options.AnswerOptionResultDto;
+import com.quizapp.web.dto.question.QuestionStatisticDto;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,8 +17,11 @@ public class TestDto {
     private String author;
     private long duration;
     private double grade;
+    private boolean isGraded;
+    private boolean isForm;
     private String name;
     private String theme;
     private List<QuestionDto> questions;
     private List<AnswerOptionResultDto> answers;
+    private List<QuestionStatisticDto> statistic;
 }

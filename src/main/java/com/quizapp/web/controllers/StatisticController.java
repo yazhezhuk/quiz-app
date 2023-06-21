@@ -4,12 +4,8 @@ import com.quizapp.core.interfaces.mappers.TestMapper;
 import com.quizapp.core.interfaces.repository.TestRepository;
 import com.quizapp.core.interfaces.services.domain.TestBuilderService;
 import com.quizapp.core.interfaces.services.domain.TestingService;
-import com.quizapp.web.dto.TestCreationDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

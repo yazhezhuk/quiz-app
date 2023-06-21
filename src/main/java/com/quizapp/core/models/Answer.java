@@ -16,18 +16,14 @@ public class Answer {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private AppUser user;
 
     @ManyToOne
-    @JoinColumn(name = "answer_option_id")
     private AnswerOption answerOption;
 
     @ManyToOne
-    @JoinColumn(name = "test_id")
     private Test test;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
     private Question question;
 }

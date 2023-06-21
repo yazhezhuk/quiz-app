@@ -32,10 +32,11 @@ public class Test {
 
     public final static short TEST_MIN_DURATION_MINUTES = 5;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @Lazy
-    @JoinColumn(name = "answer_id")
+    @OneToMany(mappedBy = "test")
     private List<Answer> answers;
+
+    private boolean isGraded;
+    private boolean isForm;
 
     @Column
     @Nullable
@@ -70,7 +71,12 @@ public class Test {
         questions.add(question);
     }
 
+    public double getMaxPoints(){
+        return questions.stream()
+                .map(Question::getMaxPoints)
+                .reduce(Double::sum).get();
 
+    }
 
     public long getDuration(){
         return startDate != null ? Duration.between(startDate,endDate).toMillis() : 1000000000;

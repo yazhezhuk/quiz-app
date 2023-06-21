@@ -3,22 +3,21 @@ package com.quizapp.web.controllers;
 import com.quizapp.core.interfaces.mappers.TestMapper;
 import com.quizapp.core.interfaces.repository.TestRepository;
 import com.quizapp.core.interfaces.repository.UserRepository;
+import com.quizapp.core.interfaces.services.domain.StatisticService;
 import com.quizapp.core.interfaces.services.domain.TestBuilderService;
 import com.quizapp.core.interfaces.services.domain.TestingService;
 import com.quizapp.core.models.user.AppUser;
-import com.quizapp.core.models.user.Role;
-import com.quizapp.web.dto.TestDto;
-import com.quizapp.web.dto.TestCreationDto;
-import com.quizapp.web.dto.TestViewDto;
+import com.quizapp.web.dto.test.TestDto;
+import com.quizapp.web.dto.test.TestCreationDto;
+import com.quizapp.web.dto.test.TestViewDto;
 import com.quizapp.web.dto.auth.TestAuthCodeDto;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -33,6 +32,7 @@ public class TestController {
     private final UserRepository userRepository;
     private final TestBuilderService testBuilderService;
     private final TestingService testingService;
+    private final StatisticService statisticService;
 
     @GetMapping("/")
     public ResponseEntity<List<TestCreationDto>> getTests() {
@@ -94,7 +94,7 @@ public class TestController {
 
             var test = testMapper.FromCreationDto(testDto);
             var connectionString = testBuilderService.commitTest(userEntity,test);
-            return ResponseEntity.ok(connectionString);
+            return ResponseEntity.ok(test.getId());
     }
 
     @PostMapping("/end/{testId}")
@@ -109,17 +109,45 @@ public class TestController {
         }
     }
 
+    @GetMapping("/overview/{testId}")
+    public ResponseEntity overview(@PathVariable int testId){
+        try {
+            var user = retrieveUser();
 
+            return ResponseEntity.ok(testingService.getOverview(testId));
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/result/{testId}/users")
+    public ResponseEntity userResults(@PathVariable int testId){
+        try {
+            var user = retrieveUser();
+            var test = testRepository.findById(testId).orElseThrow(() -> new IllegalArgumentException("user not found"));
+
+            if (user.getId() != test.getCreator().getId())
+                return ResponseEntity.notFound().build();
+
+            return ResponseEntity.ok(testingService.getUsersResults(testId));
+
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/result/{testId}")
     public ResponseEntity result(@PathVariable int testId){
         try {
             var user = retrieveUser();
-            if (user.getRole() == Role.USER)
+            var test = testRepository.findById(testId).orElseThrow(() -> new IllegalArgumentException("user not found"));
+
+            if (user.getId() == test.getCreator().getId())
+                return ResponseEntity.ok(statisticService.getTestWithStatistic(testId));
+            else
                 return ResponseEntity.ok(testingService.getUserResults(user.getId(),testId));
 
-            return ResponseEntity.ok().build();
         } catch (Exception e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

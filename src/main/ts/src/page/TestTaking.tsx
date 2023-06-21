@@ -36,8 +36,9 @@ const TestTaking: React.FC<{}> = () => {
         setTest(JSON.parse(localStorage.getItem("test") ?? "{}"));
     }, []);
 
-    const getAnswer = (question: any) => {
-        return question.answerOptions.filter((ao: any) => ao.selected)[0]
+    const getAnswerIndex = (question: any) => {
+        console.log(question.answerOptions.findIndex((ao: any) => ao.selected))
+        return question.answerOptions.findIndex((ao: any) => ao.selected)
     }
 
     const uploadTestAnswers = () => {
@@ -45,7 +46,7 @@ const TestTaking: React.FC<{}> = () => {
         test.questions.forEach((question :any,index: number) => {
             console.log(question);
             console.log(index);
-            axios.post('/api/test/answer/' + question.id + '/with/' + getAnswer(question).id, {}, {
+            axios.post('/api/test/answer/' + question.id + '/with/' + question.answerOptions[getAnswerIndex(question)].id, {}, {
                 headers: {
                     Authorization: "Bearer "
                         + JSON.parse(sessionStorage.getItem("user") ?? '{"token":"yes"}').token
@@ -61,7 +62,7 @@ const TestTaking: React.FC<{}> = () => {
                             }
                         }).then(r => {
                             sessionStorage.setItem("lastTest",JSON.stringify(test))
-                            nav("test/result/" + test.id)
+                            nav("/test/result/" + test.id)
                             console.log("Test ended.")
                         })
                 } )
@@ -82,7 +83,7 @@ const TestTaking: React.FC<{}> = () => {
 
     const handleCheckChange = (event: any) => {
         let key: { q: number, o: number } = JSON.parse(event.target.id)
-        let option = test.questions[key.q].answerOptions[key.o%2];
+        let option = test.questions[key.q].answerOptions[key.o];
         let question = test.questions[key.q];
         if (!checkIfAnotherSelected(key.q)) {
             console.log("loh")
@@ -90,11 +91,10 @@ const TestTaking: React.FC<{}> = () => {
             setTest(test)
             setUpdate(!update)
             return;
-        } else if (option.id !== getAnswer(question).id) {
+        } else if (key.o !== getAnswerIndex(question)) {
             console.log("pidr")
-            console.log(getAnswer(question).id % 2)
             test.questions[key.q]
-                .answerOptions[(getAnswer(question).id - 1) % 2]
+                .answerOptions[(getAnswerIndex(question))]
                 .selected = false
             option.selected = true
 
@@ -152,7 +152,7 @@ const TestTaking: React.FC<{}> = () => {
                                                     type="checkbox"
                                                     className="w-10"
                                                     label={option.text}
-                                                    id={JSON.stringify({q: index, o: optionIndex}) ?? 1}
+                                                    id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length}) ?? 1}
                                                     onClick={handleCheckChange}
                                                     checked={option.selected}
                                                 />

@@ -29,7 +29,7 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
         axios.post('http://localhost:8080/api/auth/signin',{email,password})
             .then(response => {
                 sessionStorage.setItem("user",JSON.stringify(response.data))
-                navigate("/main")
+                navigate("/choose")
             })
             .catch(error => console.log(error));
         console.log('Signing up...', email, password);
