@@ -10,10 +10,11 @@ interface SignUpProps {
     onClose: () => void;
 }
 
-const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
+const SignIn: React.FC<SignUpProps> = ({ show, onClose }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const [close,setClose] = useState(false);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -38,20 +39,24 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
     };
 
     return (
-        <div className={classes.field} hidden={show} onAbort={onClose}>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Control
+        <div className={classes.field + " rounded-4 p-4 align-items-center flex-column"} hidden={show} onAbort={onClose}>
+
+            <span className="font-semibold text-lg ms-auto me-auto p-4">Логін</span>
+            <Form className="text-sm mt-3 ms-auto me-auto" onSubmit={handleSubmit}>
+                <Form.Group className="ms-auto me-auto" controlId="formBasicEmail">
+                    <input
                         type="email"
                         placeholder="Enter email"
                         value={email}
+                        className="border-2  ms-auto me-auto w-100 mb-3  p-2 border-black rounded-3 bg-transparent"
                         onChange={handleEmailChange}
                         required
                     />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
-                    <Form.Control
+                    <input
+                        className="border-2 p-2 w-100 border-black rounded-3 bg-transparent"
                         type="password"
                         placeholder="Password"
                         value={password}
@@ -59,13 +64,14 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
                         required
                     />
                 </Form.Group>
-
-                <Button variant="primary" type="submit">
+                <div className="bg-slate-900 m-4 w-75 d-flex rounded-3 text-amber-300">
+                <Button variant="" className="text-white ms-auto me-auto text-center" type="submit">
                     Ввійти
                 </Button>
+                </div>
             </Form>
         </div>
     );
 };
 
-export default SignUp;
+export default SignIn;

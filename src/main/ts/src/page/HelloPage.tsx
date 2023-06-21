@@ -32,9 +32,10 @@ export const WelcomePage: FC<Props> = memo(function Welcome(props = {}) {
 
 
     return (
-        <div className="column h-100 d-flex justify-content-center flex-column">
+        <div className="h-50 w-50 d-flex align-self-center justify-content-center ms-auto me-auto flex-column">
             <SignUpPopUp show={!isRegisterClicked} onClose={() => setRegisterClicked(!isRegisterClicked)}></SignUpPopUp>
-            <SignInForm show={!isSingInClicked} onClose={() => isSingInClicked}></SignInForm>
+            <SignInForm show={!isSingInClicked} onClose={() => setSingInClicked(!isSingInClicked)}></SignInForm>
+
                     <Image className="w-75 ms-auto me-auto" src={require("../icons/prev.jpg")}></Image>
                     <span className={classes.welcome + " text-center text-5xl "}>Ласкаво просимо</span>
                     <span className={classes.welcomeMessage + " mt-3 mb-5 text-xl font-thin"}>Онлайн тестування для ваших потреб</span>

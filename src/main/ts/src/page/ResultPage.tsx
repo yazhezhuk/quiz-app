@@ -68,8 +68,8 @@ const ResultPage: React.FC = () => {
                             </div>
                             <p className="font-light h3 ms-5 justify-self-end align-self-center">Результати учасників:</p>
 
-                            <p className="d-flex ps-5 h5 mb-0 font-bold">Запитань: {test.questions.length}</p>
-                            {test.questions.map((question: any, index: any) => (
+                            <p className="d-flex ps-5 h5 mb-0 font-bold">Запитань: {test.questions?.length}</p>
+                            {test.questions?.map((question: any, index: any) => (
 
                                 <div className="p-5 mt-1 pt-1">
                                     <ListGroup.Item className="d-flex shadow-md hover:shadow-lg flex-column">
@@ -77,8 +77,11 @@ const ResultPage: React.FC = () => {
                                         <Card className="w-28 border-4 text-center align-self-end">Питання {index + 1}</Card>
                                         <div className="d-flex pt-2 pb-0 justify-content-between w-100 flex-row">
                                             <p className="text-dark-700 m-0 text-xl">{question.text}</p>
+                                            {!test.form ?
                                             <Card
                                                 className="bg-secondary d-flex bg-opacity-10 w-16 text-center text-xs mt-2 h-75">{question.grade} Бали</Card>
+                                                :null
+                                            }
                                         </div>
                                         <hr className="bg-gray-700 border-2 mt-0"/>
                                         <Form className="d-flex flex-wrap flex-row justify-content-evenly">

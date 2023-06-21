@@ -10,19 +10,22 @@ const testTest = {
     theme: "yes",
     grade: 15,
     author: "Zheka Bukur",
-    answers: [{isRight:false,isUserSelected:true},{isRight:true,isUserSelected:false},{isRight:true,isUserSelected:true},{isRight:false,isUserSelected:false}],
+    answers: [{isRight: false, isUserSelected: true}, {isRight: true, isUserSelected: false}, {
+        isRight: true,
+        isUserSelected: true
+    }, {isRight: false, isUserSelected: false}],
     questions: [
         {
             id: 1, text: "Pes patron?", grade: 2, answerOptions: [{
-                text: "cringe", id: 1, isTrue: true,isUserSelected: false
+                text: "cringe", id: 1, isTrue: true, isUserSelected: false
             }, {
-                text: "base", id: 2, isTrue: false,isUserSelected: true
+                text: "base", id: 2, isTrue: false, isUserSelected: true
             }]
         }, {
             id: 2, text: "Trivoga?", grade: 2, answerOptions: [{
-                text: "cringe", isTrue: true,isUserSelected: true
+                text: "cringe", isTrue: true, isUserSelected: true
             }, {
-                text: "base", isTrue: false,isUserSelected: false
+                text: "base", isTrue: false, isUserSelected: false
             }]
         }
     ]
@@ -76,7 +79,8 @@ const UserResult: React.FC = () => {
                 <p className="font-light justify-self-end align-self-center">Творець:{test.author}</p>
 
                 <p className="d-flex ps-4 h5 mb-0 font-bold">Запитань: {test.questions.length}</p>
-                <p className="d-flex ps-4 h5 mb-0 font-bold">Бал: {test.grade}</p>
+                {!test.form ?
+                <p className="d-flex ps-4 h5 mb-0 font-bold">Ваша оцінка: {test.grade}</p> :null}
 
                 {test.questions.map((question: any, index: any) => (
 
@@ -86,16 +90,18 @@ const UserResult: React.FC = () => {
                             <Card className="w-28 border-4 align-self-end">Питання {index + 1}</Card>
                             <div className="d-flex pt-2 pb-0 justify-content-between w-100 flex-row">
                                 <p className="text-dark-700 m-0 text-xl">{question.text}</p>
-                                <Card
-                                    className="g-secondary bg-opacity-10 w-16 text-xs mb-0 mt-2 h-75">{question.grade} Бали</Card>
+                                {!test.form ?
+                                    <Card
+                                        className="g-secondary bg-opacity-10 w-16 text-xs mb-0 mt-2 h-75">{question.grade} Бали</Card> : null
+                                }
                             </div>
                             <hr className="bg-gray-700 border-2 mt-0"/>
                             <Form className="d-flex justify-content-evenly flex-column">
                                 <div className="d-flex w-50 mt-3 flex-column">
                                     {question.answerOptions.map((option: any, optionIndex: any) => (
                                         <p className={"w-75 m-1 justify-content-baseline font-light text-lg d-flex flex-row " +
-                                            (isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? classes.green : !isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? "text-red-500 font-semibold" : "")}> {optionIndex + 1}. {option.text}
-                                            {(isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? " ✓" : !isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? " ×" : "")}</p>
+                                            (isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? classes.green : !isTrue(index, optionIndex) && isUserSelected(index, optionIndex) && !test.form ? "text-red-500 font-semibold" : "")}> {optionIndex + 1}. {option.text}
+                                            {((isTrue(index, optionIndex) && isUserSelected(index, optionIndex)) || test.form && isUserSelected(index, optionIndex) ? " ✓" : !isTrue(index, optionIndex) && isUserSelected(index, optionIndex) ? " ×" : "")}</p>
                                     ))}
                                 </div>
                             </Form>

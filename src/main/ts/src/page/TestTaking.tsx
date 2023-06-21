@@ -43,7 +43,7 @@ const TestTaking: React.FC<{}> = () => {
 
     const uploadTestAnswers = () => {
         console.log("Ya")
-        test.questions.forEach((question :any,index: number) => {
+        test.questions.forEach((question: any, index: number) => {
             console.log(question);
             console.log(index);
             axios.post('/api/test/answer/' + question.id + '/with/' + question.answerOptions[getAnswerIndex(question)].id, {}, {
@@ -52,7 +52,7 @@ const TestTaking: React.FC<{}> = () => {
                         + JSON.parse(sessionStorage.getItem("user") ?? '{"token":"yes"}').token
                 }
             })
-                .then(resp =>{
+                .then(resp => {
                     console.log("Here")
                     if (index === test.questions.length - 1)
                         axios.post('/api/test/end/' + test.id, {}, {
@@ -61,14 +61,14 @@ const TestTaking: React.FC<{}> = () => {
                                     + JSON.parse(sessionStorage.getItem("user") ?? "").token
                             }
                         }).then(r => {
-                            sessionStorage.setItem("lastTest",JSON.stringify(test))
+                            sessionStorage.setItem("lastTest", JSON.stringify(test))
                             nav("/test/result/" + test.id)
                             console.log("Test ended.")
                         })
-                } )
-                .catch(err =>{
+                })
+                .catch(err => {
 
-                }
+                    }
                 )
                 .catch(err => console.log(err));
 
@@ -76,10 +76,10 @@ const TestTaking: React.FC<{}> = () => {
     }
 
 
-        const checkIfAnotherSelected = (questionId:number) => {
-            console.log("is selected:" + test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false))
-            return test.questions[questionId].answerOptions.reduce((acc:boolean,opt:any) => acc || opt.selected,false)
-        }
+    const checkIfAnotherSelected = (questionId: number) => {
+        console.log("is selected:" + test.questions[questionId].answerOptions.reduce((acc: boolean, opt: any) => acc || opt.selected, false))
+        return test.questions[questionId].answerOptions.reduce((acc: boolean, opt: any) => acc || opt.selected, false)
+    }
 
     const handleCheckChange = (event: any) => {
         let key: { q: number, o: number } = JSON.parse(event.target.id)
@@ -101,8 +101,7 @@ const TestTaking: React.FC<{}> = () => {
             setTest(test)
             setUpdate(!update)
             return;
-        }
-        else {
+        } else {
             console.log("eblan")
             option.selected = false
 
@@ -127,7 +126,8 @@ const TestTaking: React.FC<{}> = () => {
                     <>
                         <ListGroup className="bg-light rounded-4">
                             <div className="d-flex flex-row">
-                                <img onClick={() => nav("/main")} className="w-8 m-3" src={require("../icons/left-arrow.png")} alt="1"></img>
+                                <img onClick={() => nav("/main")} className="w-8 m-3"
+                                     src={require("../icons/left-arrow.png")} alt="1"></img>
                                 <p className="font-normal ms-auto me-auto d-flex justify-self-end align-self-center h3">'{test.name}'</p>
                             </div>
                             <p className="font-light justify-self-end align-self-center">Творець:{test.author}</p>
@@ -141,8 +141,10 @@ const TestTaking: React.FC<{}> = () => {
                                         <Card className="w-28 border-4 align-self-end">Питання {index + 1}</Card>
                                         <div className="d-flex pt-2 pb-0 justify-content-between w-100 flex-row">
                                             <p className="text-dark-700 m-0 text-xl">{question.text}</p>
-                                            <Card
-                                                className="bg-secondary bg-opacity-10 w-16 text-xs mb-0 mt-2 h-75">{question.grade} Бали</Card>
+                                            {!test.graded && !test.form ?
+                                                <Card
+                                                    className="bg-secondary bg-opacity-10 w-16 text-xs mb-0 mt-2 h-75">{question.grade} Бали</Card> : null
+                                            }
                                         </div>
                                         <hr className="bg-gray-700 border-2 mt-0"/>
                                         <Form className="d-flex justify-content-evenly flex-column">
@@ -152,7 +154,10 @@ const TestTaking: React.FC<{}> = () => {
                                                     type="checkbox"
                                                     className="w-10"
                                                     label={option.text}
-                                                    id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length}) ?? 1}
+                                                    id={JSON.stringify({
+                                                        q: index,
+                                                        o: optionIndex % question.answerOptions.length
+                                                    }) ?? 1}
                                                     onClick={handleCheckChange}
                                                     checked={option.selected}
                                                 />
@@ -163,7 +168,10 @@ const TestTaking: React.FC<{}> = () => {
 
 
                             ))}
-                            <button className={classes.button + " w-25 mb-5 rounded-4 p-3 h5 font-semibold d-flex align-self-center justify-content-center"} onClick={uploadTestAnswers}>Відправити</button>
+                            <button
+                                className={classes.button + " w-25 mb-5 rounded-4 p-3 h5 font-semibold d-flex align-self-center justify-content-center"}
+                                onClick={uploadTestAnswers}>Відправити
+                            </button>
                         </ListGroup></>
                 }
             </div>

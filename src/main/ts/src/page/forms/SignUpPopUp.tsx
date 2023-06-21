@@ -47,11 +47,13 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
     };
 
     return (
-        <div className={classes.field} hidden={show} onAbort={onClose}>
-            <Form onSubmit={handleSubmit}>
+        <div className={classes.field + " rounded-4 p-4 align-items-center flex-column"} hidden={show} onAbort={onClose}>
+            <span className="font-semibold text-lg ms-auto me-auto p-4">Реєстрація</span>
+            <Form className="text-sm mt-3 ms-auto me-auto" onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicName">
-                    <Form.Control
+                    <input
                         type="text"
+                        className="border-2  ms-auto me-auto w-100 mb-3  p-2 border-black rounded-3 bg-transparent"
                         placeholder="Enter your name"
                         value={name}
                         onChange={handleNameChange}
@@ -60,27 +62,30 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
                 </Form.Group>
 
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Control
+                    <input
                         type="email"
                         placeholder="Enter email"
                         value={email}
+                        className="border-2  ms-auto me-auto w-100 mb-3  p-2 border-black rounded-3 bg-transparent"
                         onChange={handleEmailChange}
                         required
                     />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
-                    <Form.Control
+                    <input
                         type="password"
                         placeholder="Password"
                         value={password}
+                        className="border-2  ms-auto me-auto w-100 mb-3  p-2 border-black rounded-3 bg-transparent"
                         onChange={handlePasswordChange}
                         required
                     />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicConfirmPassword">
-                    <Form.Control
+                    <input
+                        className="border-2  ms-auto me-auto w-100 mb-3  p-2 border-black rounded-3 bg-transparent"
                         type="password"
                         placeholder="Confirm Password"
                         value={confirmPassword}
@@ -89,9 +94,11 @@ const SignUp: React.FC<SignUpProps> = ({ show, onClose }) => {
                     />
                 </Form.Group>
 
-                <Button variant="primary" type="submit">
-                    Зареєструватися
-                </Button>
+                <div className="bg-slate-900 m-4 mb-1 w-75 d-flex rounded-3 text-amber-300">
+                    <Button variant="" className="text-white ms-auto me-auto text-center" type="submit">
+                        Зареєструватися
+                    </Button>
+                </div>
             </Form>
         </div>
     );

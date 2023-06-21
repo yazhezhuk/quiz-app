@@ -9,29 +9,16 @@ import testInfoPage from "./TestInfoPage";
 
 
 const testTest = {
-    name: "База",
-    theme: "yes",
-    isGraded: false,
-    questions: [
-        {
-            text: "Pes patron?", maxPoints: 1, answerOptions: [{
-                text: "cringe", points: 0
-            }, {
-                text: "base", points: 0
-            }]
-        }, {
-            text: "Trivoga?", maxPoints: 2, answerOptions: [{
-                text: "cringe", points: 0
-            }, {
-                text: "base", points: 0
-            }]
-        }
-    ]
+    name: "",
+    theme: "",
+    graded: false,
+    form:false,
+    questions: []
 }
 
 const TestCreationPage: React.FC = () => {
     const nav = useNavigate();
-    const [test, setTest] = useState<any>(testTest);
+    const [test, setTest] = useState<any>();
     const [update,setUpdate] = useState(false);
     const [answers, setAnswers] = useState(new Map<number, number>());
     const [isGraded,setIsGraded] = useState(false);
@@ -40,11 +27,7 @@ const TestCreationPage: React.FC = () => {
     useEffect(() => {
         //let test = JSON.parse(localStorage.getItem("test")??"")
         setTest(testTest)
-        console.log("set")
-        test.questions.forEach((question: any) => {
-            answers.set(question.id, 0)
-        })
-        setLatestQuestionId(test.questions.length - 1);
+        console.log(test)
     }, []);
 
 
@@ -89,7 +72,7 @@ const TestCreationPage: React.FC = () => {
         console.log("New answer option" + event.currentTarget.id)
         let curr =  test.questions[event.currentTarget.id].answerOptions;
         test.questions[event.currentTarget.id].answerOptions = [...curr, {
-            text: "",points:0
+            text: "",points:!test.form ? 0 : 1
         }]
         console.log(test.questions)
         setTest(test)
@@ -166,7 +149,26 @@ const TestCreationPage: React.FC = () => {
     }
 
     const handleGradingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsGraded(!isGraded);
+        test.graded = !test.graded
+        setIsGraded(!isGraded)
+        setUpdate(!update);
+    }
+
+    const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        test.form = !test.form
+        if (!test.form)
+            test.questions.forEach((q:any) => {
+                q.maxPoints = 0
+                q.answerOptions.forEach((ao:any) => ao.points = 0)
+            })
+        else {
+                test.questions.forEach((q:any) => {
+                    q.maxPoints = 1
+                    q.answerOptions.forEach((ao:any) => ao.points = 1)
+                })
+        }
+        setTest(test)
+        setUpdate(!update);
     }
 
     return (
@@ -179,11 +181,13 @@ const TestCreationPage: React.FC = () => {
                             </div>
                             <input onChange={handleThemeChange} placeholder="Тема сесії" className="m-4 text-dark-700 bg-light text-xl ps-3 mb-1 font-semibold align-self-start w-50 d-flex "></input>
                             <hr className="h-px rounded-5 border-2 border-dark opacity-100 m-4 mb-0 mt-0"/>
-                            <Form.Label className="align-self-baseline pb-1  d-flex m-4">Ввімкнути оцінювання<Form.Check onChange={handleGradingChange} type="switch"></Form.Check></Form.Label>
+
+                            <Form.Label aria-disabled={test?.graded} className="align-self-baseline pb-1  d-flex mb-0 m-4">Форма<Form.Check disabled={test?.graded} onChange={handleFormChange} type="switch"></Form.Check></Form.Label>
+                            <Form.Label aria-disabled={test?.form} className="align-self-baseline pb-1  d-flex">Ввімкнути оцінювання<Form.Check disabled={test?.form} onChange={handleGradingChange} type="switch"></Form.Check></Form.Label>
 
 
-                            <p className="d-flex ps-4 h5 mb-0 font-bold">Запитань: {test.questions.length}</p>
-                            {test.questions.map((question: any, index: any) => (
+                            <p className="d-flex ps-4 h5 mb-0 font-bold">Запитань: {test?.questions.length}</p>
+                            {test?.questions?.map((question: any, index: any) => (
 
                                 <div className="p-4 pt-1">
                                     <ListGroup.Item className="d-flex shadow-md hover:shadow-lg flex-column">
@@ -208,14 +212,15 @@ const TestCreationPage: React.FC = () => {
                                         <hr className="bg-gray-700 border-2 mt-0"/>
                                         <Form className="d-flex justify-content-evenly flex-column">
 
-                                            {question.answerOptions.map((option: any, optionIndex: any) => (
+                                            {question?.answerOptions.map((option: any, optionIndex: any) => (
                                                 <Form.Label className="d-flex align-items-baseline flex-row">
+                                                    {!test.form ?
                                                 <Form.Check
                                                     type="checkbox"
                                                     className="w-10"
                                                     id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length}) ?? 1}
                                                     onChange={handleTrueAnswerOptionChange}
-                                                    checked={optionIndex === getAnswerIndex(question)}/>
+                                                    checked={optionIndex === getAnswerIndex(question)}/>:null}
                                                     <Input id={JSON.stringify({q: index, o: optionIndex % question.answerOptions.length } ?? 1)} onChange={handleAnswerOptionChange} className="w-auto p-0"></Input>
                                                 </Form.Label>
 

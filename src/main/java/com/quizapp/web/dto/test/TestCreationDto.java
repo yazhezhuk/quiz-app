@@ -12,7 +12,7 @@ import java.util.List;
 public final class TestCreationDto {
     private String name;
     private String theme;
-    private boolean isGraded;
-    private boolean isForm;
+    private boolean graded;
+    private boolean form;
     private List<QuestionCreationDto> questions;
 }
